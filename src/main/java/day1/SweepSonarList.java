@@ -3,13 +3,13 @@ package day1;
 import lombok.Getter;
 import util.IterativeSolver;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class SweepSonarList implements IterativeSolver {
 
     private static final int SLIDING_WINDOW = 3;
-    private final Deque<Integer> previousValues = new LinkedBlockingDeque<>();
+    private final Deque<Integer> previousValues = new ArrayDeque<>();
 
     @Getter
     private int increaseTotal;
@@ -39,7 +39,6 @@ public class SweepSonarList implements IterativeSolver {
     }
 
     private int calcTotalAmount(final Deque<Integer> deque) {
-        return deque.stream()
-                .reduce(0, Integer::sum);
+        return deque.stream().reduce(0, Integer::sum);
     }
 }

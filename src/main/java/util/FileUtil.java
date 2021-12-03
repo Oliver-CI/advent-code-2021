@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -18,7 +21,7 @@ public class FileUtil {
         return inputStream;
     }
 
-    public static void iterateOverLine(final InputStream stream, final IterativeSolver solver){
+    public static void iterateOverLine(final InputStream stream, final IterativeSolver solver) {
         System.out.println("start iterate over lines");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
             var line = br.readLine();
@@ -29,5 +32,22 @@ public class FileUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<String> iterateOverColumn(final InputStream stream, final IterativeSolver solver) {
+        System.out.println("start iterate over column");
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
+            lines = br.lines().toList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < lines.get(0).length(); i++) {
+            int startIndex = i;
+            int endIndex = i + 1;
+            final String column = lines.stream().map(line -> line.substring(startIndex, endIndex)).collect(Collectors.joining());
+            solver.iterate(column);
+        }
+        return lines;
     }
 }

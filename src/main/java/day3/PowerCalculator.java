@@ -14,6 +14,11 @@ public class PowerCalculator implements IterativeSolver {
     private long cO2Scrubber;
     private String totalBinaryString = "";
 
+    private final List<String> lines;
+
+    public PowerCalculator(List<String> lines) {
+        this.lines = lines;
+    }
 
     @Override
     public void iterate(String currentBit) {

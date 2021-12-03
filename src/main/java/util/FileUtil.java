@@ -21,6 +21,16 @@ public class FileUtil {
         return inputStream;
     }
 
+    public static List<String> getAllLines(final InputStream stream) {
+        System.out.println("getAllLines");
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {
+            return br.lines().toList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static void iterateOverLine(final InputStream stream, final IterativeSolver solver) {
         System.out.println("start iterate over lines");
         try (BufferedReader br = new BufferedReader(new InputStreamReader(stream))) {

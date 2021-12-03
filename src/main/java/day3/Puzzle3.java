@@ -7,11 +7,11 @@ import java.util.List;
 
 public class Puzzle3 {
     public static void main(String[] args) {
-//        final String fileName = "day3/example.txt";
-        final String fileName = "day3/input.txt";
+        final String fileName = "day3/example.txt";
+//        final String fileName = "day3/input.txt";
         final InputStream inputStream = FileUtil.readFile(fileName);
 
-        var powerCalculator = new PowerCalculator();
+        var powerCalculator = new PowerCalculator(FileUtil.getAllLines(inputStream));
         final List<String> lines = FileUtil.iterateOverColumn(inputStream, powerCalculator);
 
         powerCalculator.convertPower(lines);

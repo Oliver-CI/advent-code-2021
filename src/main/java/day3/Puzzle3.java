@@ -18,5 +18,8 @@ public class Puzzle3 {
         System.out.println("Gamma: " + powerCalculator.getGammaRate());
         System.out.println("Epsilon: " + powerCalculator.getEpsilonRate());
         System.out.println("power: " + powerCalculator.getPower());
+        System.out.println("OxygenGenerator: " + powerCalculator.getOxygenGenerator());
+        System.out.println("CO2Scrubber: " + powerCalculator.getCO2Scrubber());
+        System.out.println("LifeSupportRating: " + powerCalculator.getLifeSupportRating());
     }
 }

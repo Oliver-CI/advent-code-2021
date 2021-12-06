@@ -3,77 +3,49 @@ package day6;
 import lombok.Getter;
 import util.IterativeSolver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashMap;
 
 @Getter
 public class FishPopulation implements IterativeSolver {
     private long totalPopulation;
     private final int days;
+    private HashMap<Long, Long> pool;
 
     public FishPopulation(int days) {
         this.days = days;
+        this.pool = new HashMap<>();
     }
 
     @Override
     public void iterate(String line) {
-        List<Fish> fishes = Arrays.stream(line.split(",")).map(Integer::parseInt).map(Fish::new).collect(Collectors.toList());
 
-        growFishes(days, fishes);
+        Arrays.stream(line.split(",")).map(Long::parseLong).sorted().forEach(i -> addEntry(pool, i, 1L));
+        var counter = new HashMap<Long, Long>();
 
-    }
-
-    private void growFishes(int startingDays, List<Fish> fishes) {
-        while (startingDays > 0) {
-            var newFishes = new ArrayList<Fish>();
-            for (Fish fish : fishes) {
-                if (fish.getDays() == 0) {
-                    final Fish newFish = fish.bearChildren();
-                    newFishes.add(newFish);
+        for (int i = 0; i < days; i++) {
+            for (var entry : pool.entrySet()) {
+                if (entry.getKey() == 0) {
+                    addEntry(counter, 8L, entry.getValue());
+                    addEntry(counter, 6L, entry.getValue());
                 } else {
-                    fish.age();
+                    addEntry(counter, entry.getKey() - 1, entry.getValue());
                 }
             }
-            fishes.addAll(newFishes);
-            startingDays--;
-            if (fishes.size() > 1000000) {
-                //todo does not compute
-                int finalStartingDays = startingDays;
-                fishes.stream().collect(Collectors.groupingBy(Fish::getDays)).values().forEach(list -> growFishes(finalStartingDays, list));
-                return;
-            }
+            pool = counter;
+            counter = new HashMap<>();
         }
-        totalPopulation = fishes.size();
+
+        totalPopulation = this.pool.values().stream().reduce(0L, Long::sum);
     }
 
-    @Getter
-    static class Fish {
-        private static final int NEW_DAYS = 8;
-        private static final int OLD_DAYS = 6;
-
-        private boolean newBorn;
-        private int days;
-
-        public Fish() {
-            this.newBorn = true;
-            this.days = NEW_DAYS;
-        }
-
-        public Fish(int days) {
-            this.newBorn = false;
-            this.days = days;
-        }
-
-        public Fish bearChildren() {
-            if (newBorn) this.newBorn = false;
-            this.days = OLD_DAYS;
-            return new Fish();
-        }
-
-        public void age() {
-            this.days--;
+    public void addEntry(HashMap<Long, Long> map, final long day, final long value) {
+        if (map.containsKey(day)) {
+            map.put(day, map.get(day) + value);
+        } else {
+            map.put(day, value);
         }
     }
+
+
 }

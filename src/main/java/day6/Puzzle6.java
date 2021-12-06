@@ -14,7 +14,7 @@ public class Puzzle6 {
         final String firstLine = allLines.get(0);
 
 
-        final int days = 80;
+        final int days = 256;
         var fishPopulation = new FishPopulation(days);
         fishPopulation.iterate(firstLine);
         System.out.println("Days: " + days + ", Population: " + fishPopulation.getTotalPopulation());

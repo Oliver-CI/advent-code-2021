@@ -3,7 +3,6 @@ package day9;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.IntStream;
@@ -14,14 +13,12 @@ import static java.util.Objects.nonNull;
 @Getter
 public class HeightMapper {
     private final List<Integer> lowestPoints;
-    private final List<Point> lowPoints;
     private final int risk;
     private int maxX;
     private int maxY;
 
     public HeightMapper() {
         this.lowestPoints = new ArrayList<>();
-        this.lowPoints = new ArrayList<>();
         this.risk = 0;
     }
 
@@ -31,26 +28,10 @@ public class HeightMapper {
         final List<int[]> asciiTable = lines.stream().map(String::chars).map(IntStream::toArray).toList();
         for (int i = 0; i < asciiTable.size(); i++) {
             int[] row = asciiTable.get(i);
-            final int minVal = Arrays.stream(row).min().getAsInt();
             for (int j = 0; j < row.length; j++) {
-                if (row[j] == minVal) {
-                    lowPoints.add(new Point(i, j, parseCharToInt(minVal)));
-                }
+                checkIfLowest(asciiTable, new Point(i, j, parseCharToInt(row[j])));
             }
         }
-        for (int i = 0; i <= maxX; i++) {
-            int finalI = i;
-            final List<Integer> col = lines.stream().map(String::chars).map(IntStream::toArray).map(a -> a[finalI]).toList();
-            final int minVal = col.stream().mapToInt(Integer::intValue).min().getAsInt();
-            for (int j = 0; j <= maxY; j++) {
-                if (col.get(j) == minVal) {
-                    lowPoints.add(new Point(j, i, parseCharToInt(minVal)));
-                }
-            }
-        }
-        final List<Point> distinctList = lowPoints.stream().distinct().toList();
-        distinctList.forEach(point -> checkIfLowest(asciiTable, point));
-
     }
 
     private int parseCharToInt(int minVal) {
@@ -99,7 +80,6 @@ public class HeightMapper {
     }
 
     public int getRisk() {
-        System.out.println(lowPoints);
         return lowestPoints.stream()
                 .map(i -> i + 1)
                 .reduce(0, Integer::sum);

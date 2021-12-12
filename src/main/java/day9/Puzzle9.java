@@ -14,6 +14,7 @@ public class Puzzle9 {
         heightMapper.measure(FileUtil.getAllLines(inputStream));
 
         System.out.println("Risk: " + heightMapper.getRisk());
+        System.out.println("BasinSizes: " + heightMapper.getBasinSizes());
 
     }
 }

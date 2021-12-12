@@ -7,17 +7,15 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Getter
 public class HeightMapper {
     public static final int CHAR_9 = 57;
     private final List<Point> lowestPoints;
-    private final List<Integer> basinSizes;
+    private final List<Long> basinSizes;
     private final int risk;
     private int maxX;
     private int maxY;
@@ -40,14 +38,14 @@ public class HeightMapper {
                     final boolean lowest = checkIfLowest(asciiTable, point);
                     if (lowest) {
                         lowestPoints.add(point);
-                        calcBasinSize(asciiTable, point);
+                        basinSizes.add(calcBasinSize(asciiTable, point));
                     }
                 }
             }
         }
     }
 
-    private void calcBasinSize(List<int[]> asciiTable, Point point) {
+    private long calcBasinSize(List<int[]> asciiTable, Point point) {
         var traversed = new ArrayList<Point>() {{
             add(point);
         }};
@@ -59,12 +57,13 @@ public class HeightMapper {
             for (Point activePoint : active) {
                 getNeighbours(asciiTable, activePoint).stream()
                         .filter(n -> n.value < 9)
+                        .filter(n -> !traversed.contains(n))
                         .forEach(neighbours::add);
             }
             traversed.addAll(neighbours);
             active = new ArrayList<>(neighbours);
         }
-        basinSizes.add(traversed.size());
+        return traversed.stream().distinct().count();
     }
 
     private int parseCharToInt(int minVal) {
@@ -117,8 +116,9 @@ public class HeightMapper {
         return lowestPoints.stream().map(p -> p.value).map(i -> i + 1).reduce(0, Integer::sum);
     }
 
-    public int getBasinSizes() {
-        return basinSizes.stream().sorted(Comparator.reverseOrder()).limit(3).reduce((a, b) -> a * b).orElse(0);
+    public long getBasinSizes() {
+        System.out.println(basinSizes.stream().sorted().collect(Collectors.toList()));
+        return basinSizes.stream().sorted(Comparator.reverseOrder()).limit(3).reduce((a, b) -> a * b).orElse(0L);
     }
 
     static class Point {

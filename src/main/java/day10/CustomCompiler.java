@@ -70,7 +70,6 @@ public class CustomCompiler implements IterativeSolver {
 
     public long getCompletionScore() {
         completionList.sort(Comparator.reverseOrder());
-        System.out.println(completionList);
         final int middleIndex = (completionList.size() / 2);
         return completionList.get(middleIndex);
     }

@@ -9,8 +9,9 @@ public class Puzzle {
         final String fileName = "day12/example.txt";
 //        final String fileName = "day12/input.txt";
         final InputStream inputStream = FileUtil.readFile(fileName);
-
-
-        System.out.println("Result: ");
+        final CaveTracker caveTracker = new CaveTracker();
+        FileUtil.iterateOverLine(inputStream, caveTracker);
+caveTracker.buildTree();
+        System.out.println("Result: " + caveTracker.getTotalPaths());
     }
 }

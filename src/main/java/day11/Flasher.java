@@ -45,6 +45,9 @@ public class Flasher {
             simple.stream()
                     .filter(octo -> octo.value > 9)
                     .forEach(Octo::flash);
+            if (simple.stream().allMatch(octo -> octo.value == 0)) {
+                return s;
+            }
         }
 
 

@@ -14,6 +14,6 @@ public class Puzzle {
 
         final Flasher flasher = new Flasher(allLines);
 
-        System.out.println("Result: " + flasher.startFlashing(100));
+        System.out.println("Result: " + flasher.startFlashing(500));
     }
 }

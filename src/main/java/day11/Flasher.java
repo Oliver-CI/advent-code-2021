@@ -26,17 +26,21 @@ public class Flasher {
         for (int s = 0; s < steps; s++) {
             final List<Octo> simple = octi.stream().flatMap(Collection::stream).toList();
             simple.forEach(Octo::raiseLevel);
-            boolean isFlashing = simple.stream().anyMatch(octo -> octo.value > 9);
+            final List<Octo> checkList = new ArrayList<>(simple);
+
+            boolean isFlashing = checkList.stream().anyMatch(octo -> octo.value > 9);
             while (isFlashing) {
-                simple.stream()
-                        .filter(octo -> octo.value > 9 && !octo.flashed)
+                final List<Octo> flashers = checkList.stream()
+                        .filter(octo -> octo.value > 9).toList();
+
+                flashers.stream()
                         .map(octo -> getNeighbours(octi, octo))
                         .flatMap(Collection::stream)
                         .forEach(Octo::raiseLevel);
 
-                isFlashing = simple.stream()
-                        .filter(octo -> !octo.flashed)
-                        .anyMatch(octo -> octo.value > 9);
+                checkList.removeAll(flashers);
+
+                isFlashing = checkList.stream().anyMatch(octo -> octo.value > 9);
             }
             simple.stream()
                     .filter(octo -> octo.value > 9)
@@ -57,7 +61,7 @@ public class Flasher {
             diagonal.addAll(getNeighboursX(table.get(yNeighbour.x), yNeighbour));
         }
         return Stream.of(xNeighbours, yNeighbours, diagonal).flatMap(Collection::stream)
-                .filter(octo -> !octo.flashed)
+                .filter(octo -> octo.value <= 9)
                 .toList();
     }
 

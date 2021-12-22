@@ -10,7 +10,6 @@ public class Reactor implements IterativeSolver {
     public static final String REGEX_RANGE = "\\..";
     public static final String REGEX_VAR_ASSIGNMENT = "=";
 
-    private boolean[][][] grid;
     private final List<Cube> cubes = new ArrayList<>();
     private final List<Long> xes = new ArrayList<>();
     private final List<Long> yes = new ArrayList<>();
@@ -22,15 +21,18 @@ public class Reactor implements IterativeSolver {
         var on = split[0];
         var coor = split[1];
         var coors = coor.split(",");
+
         var xss = coors[0].split(REGEX_VAR_ASSIGNMENT)[1].split(REGEX_RANGE);
         var x0 = Long.parseLong(xss[0]);
-        var x1 = Long.parseLong(xss[1]);
+        var x1 = Long.parseLong(xss[1])+1;
+
         var yss = coors[1].split(REGEX_VAR_ASSIGNMENT)[1].split(REGEX_RANGE);
         var y0 = Long.parseLong(yss[0]);
-        var y1 = Long.parseLong(yss[1]);
+        var y1 = Long.parseLong(yss[1])+1;
+
         var zss = coors[2].split(REGEX_VAR_ASSIGNMENT)[1].split(REGEX_RANGE);
         var z0 = Long.parseLong(zss[0]);
-        var z1 = Long.parseLong(zss[1]);
+        var z1 = Long.parseLong(zss[1])+1;
 
         cubes.add(new Cube("on".equals(on), x0, y0, z0, x1, y1, z1));
         xes.add(x0);
@@ -47,7 +49,7 @@ public class Reactor implements IterativeSolver {
         Collections.sort(zes);
         final int dimension = xes.size();
 
-        grid = new boolean[dimension][dimension][dimension];
+        boolean[][][] grid = new boolean[dimension][dimension][dimension];
 
         for (Cube cube : cubes) {
             //this map the actual values to a new grid to handle the big load
@@ -67,20 +69,21 @@ public class Reactor implements IterativeSolver {
             }
         }
 
-        long total = 0;
-        for (int x = 0; x < dimension - 1; x++) {
-            for (int y = 0; y < dimension - 1; y++) {
-                for (int z = 0; z < dimension - 1; z++) {
+        long totalVolume = 0;
+        final int limit = dimension - 1;
+        for (int x = 0; x < limit; x++) {
+            for (int y = 0; y < limit; y++) {
+                for (int z = 0; z < limit; z++) {
                     if (grid[x][y][z]) {
-                        final long xValue = xes.get(x + 1) - xes.get(x);
-                        final long yValue = yes.get(y + 1) - yes.get(y);
-                        final long zValue = zes.get(z + 1) - zes.get(z);
-                        total += xValue * yValue * zValue;
+                        var xSide = xes.get(x + 1) - xes.get(x);
+                        var ySide = yes.get(y + 1) - yes.get(y);
+                        var zSide = zes.get(z + 1) - zes.get(z);
+                        totalVolume += (xSide * ySide * zSide);
                     }
                 }
             }
         }
-        return total;
+        return totalVolume;
     }
 
     record Cube(boolean enable, long x0, long y0, long z0, long x1, long y1, long z1) {
